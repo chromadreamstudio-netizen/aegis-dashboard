@@ -12,14 +12,12 @@ export default function AgentCommandCenter() {
   const [isDeploying, setIsDeploying] = useState(false);
   const [edgeLogs, setEdgeLogs] = useState<any[]>([]);
 
-  // استدعاء السجلات الحية من الوكيل الطرفي
   useEffect(() => {
     fetchLogs();
-    // تفعيل التحديث الفوري (Realtime) عندما يتخذ Edge Agent قراراً
     const subscription = supabase
       .channel('edge_logs_changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'edge_logs' }, (payload) => {
-        setEdgeLogs((current) => [payload.new, ...current].slice(0, 5)); // عرض آخر 5 إجراءات
+        setEdgeLogs((current) => [payload.new, ...current].slice(0, 5));
       })
       .subscribe();
 
@@ -44,10 +42,10 @@ export default function AgentCommandCenter() {
       
       const data = await res.json();
       if (data.success) {
-        alert('تم نشر السياسة بنجاح إلى الوكيل الطرفي! 🚀\n' + JSON.stringify(data.policy, null, 2));
+        alert('Policy successfully deployed to the Edge Guardian! 🚀\n' + JSON.stringify(data.policy, null, 2));
         setInstruction('');
       } else {
-        alert('حدث خطأ: ' + data.error);
+        alert('Deployment Error: ' + data.error);
       }
     } catch (error) {
       console.error(error);
@@ -57,15 +55,15 @@ export default function AgentCommandCenter() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-      {/* قسم كتابة السياسات */}
+      {/* Policy Command Section */}
       <div className="bg-slate-900 border border-emerald-500/30 p-6 rounded-xl shadow-lg">
         <h2 className="text-xl font-bold text-emerald-400 mb-2">The Agronomist Cloud Agent</h2>
-        <p className="text-sm text-slate-400 mb-4">اكتب التوجيهات الزراعية باللغة الطبيعية (عربي/إنجليزي)، وسيقوم الذكاء الاصطناعي بترجمتها برمجياً للمزرعة.</p>
+        <p className="text-sm text-slate-400 mb-4">Enter agronomic instructions in natural language. The AI will instantly translate them into executable edge policies.</p>
         
         <textarea 
           className="w-full bg-slate-800 text-white border border-slate-700 rounded-lg p-3 mb-4 focus:outline-none focus:border-emerald-500"
           rows={3}
-          placeholder="مثال: إذا جفت التربة وانخفضت نسبة الرطوبة عن 20، قم بتشغيل المضخة فوراً."
+          placeholder="e.g., If the soil dries up and moisture drops below 20%, turn on the pump immediately."
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
         />
@@ -75,14 +73,14 @@ export default function AgentCommandCenter() {
           disabled={isDeploying}
           className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg transition-colors flex justify-center items-center"
         >
-          {isDeploying ? 'جاري التحليل والنشر...' : 'نشر السياسة للمزرعة (Deploy to Edge)'}
+          {isDeploying ? 'Analyzing & Deploying...' : 'Deploy Policy to Edge'}
         </button>
       </div>
 
-      {/* قسم مراقبة الوكيل الطرفي (Edge Guardian) */}
+      {/* Edge Guardian Logs Section */}
       <div className="bg-slate-900 border border-blue-500/30 p-6 rounded-xl shadow-lg">
         <h2 className="text-xl font-bold text-blue-400 mb-2">Edge Guardian Autonomous Logs</h2>
-        <p className="text-sm text-slate-400 mb-4">سجل الإجراءات التي اتخذها وكيل الطرف في المزرعة بشكل مستقل (بدون تدخل بشري).</p>
+        <p className="text-sm text-slate-400 mb-4">Real-time log of autonomous actions taken by the Edge Guardian locally on the farm.</p>
         
         <div className="space-y-3">
           {edgeLogs.map((log, index) => (
@@ -91,7 +89,7 @@ export default function AgentCommandCenter() {
                 <span className={`px-2 py-1 text-xs font-bold rounded mr-2 ${log.action_executed === 'PUMP_ON' ? 'bg-blue-900 text-blue-300' : 'bg-orange-900 text-orange-300'}`}>
                   {log.action_executed}
                 </span>
-                <span className="text-slate-300 text-sm">القراءة الحالية: {log.sensor_reading_at_time}</span>
+                <span className="text-slate-300 text-sm">Sensor Reading: {log.sensor_reading_at_time}</span>
               </div>
               <div className="text-xs text-slate-500">
                 {new Date(log.created_at).toLocaleTimeString()}
@@ -99,7 +97,7 @@ export default function AgentCommandCenter() {
               </div>
             </div>
           ))}
-          {edgeLogs.length === 0 && <div className="text-slate-500 text-sm text-center">لا توجد إجراءات مسجلة بعد...</div>}
+          {edgeLogs.length === 0 && <div className="text-slate-500 text-sm text-center">No actions recorded yet...</div>}
         </div>
       </div>
     </div>
