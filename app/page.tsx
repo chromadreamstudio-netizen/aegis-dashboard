@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Droplet, Thermometer, Wind, Power } from "lucide-react";
 
+// استدعاء مكون مركز القيادة الذي قمنا بإنشائه
+// (تأكد أنك أنشأت الملف داخل مجلد components في جذر المشروع)
+import AgentCommandCenter from "@/components/AgentCommandCenter"; 
+
 // استخدام المتغيرات البيئية بدلاً من كتابة المفاتيح مباشرة
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -101,6 +105,10 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* --- إضافة مركز القيادة هنا --- */}
+      <AgentCommandCenter />
+      
     </div>
   );
 }
