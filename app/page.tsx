@@ -7,6 +7,9 @@ import { Droplet, Thermometer, Wind, Power } from "lucide-react";
 // Import the Agent Command Center component
 import AgentCommandCenter from "@/components/AgentCommandCenter"; 
 
+// 1. استدعاء المكون الجديد هنا
+import NetworkToggle from "@/components/NetworkToggle"; 
+
 // Using environment variables for Supabase credentials
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -54,11 +57,14 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-slate-200 p-8 font-sans">
-      <h1 className="text-4xl font-bold text-emerald-400 mb-8 tracking-wide">
+      <h1 className="text-4xl font-bold text-emerald-400 mb-4 tracking-wide">
         🌱 AegisCrop - Edge AI Dashboard
       </h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* 2. إضافة الزر التفاعلي هنا تحت العنوان وفوق البطاقات */}
+      <NetworkToggle />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         {/* Temperature Card */}
         <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-lg flex items-center space-x-4">
           <div className="p-4 bg-orange-500/20 rounded-xl text-orange-400">
